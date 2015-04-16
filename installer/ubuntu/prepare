@@ -62,9 +62,21 @@ install_dummy_dist() {
     local pkgname="crouton-$1" pkgprovides="$1"
     shift
     while [ "$#" != 0 ]; do
+        if [ "$1" = '--' ]; then
+            shift
+            break
+        fi
         pkgprovides="$pkgprovides, $1"
         shift
     done
+    local pkgdepends="$1"
+    if [ "$#" != 0 ]; then
+        shift
+        while [ "$#" != 0 ]; do
+            pkgdepends="$pkgdepends, $1"
+            shift
+        done
+    fi
     local tmp="`mktemp -d crouton.XXXXXX --tmpdir=/tmp`"
     addtrap "rm -rf '$tmp'"
     cat > "$tmp/control" <<EOF
@@ -74,6 +86,7 @@ Architecture: all
 Maintainer: crouton
 Installed-Size: 0
 Provides: $pkgprovides
+Depends: $pkgdepends
 Section: misc
 Priority: optional
 Description: Provides a dummy ${pkgname#*-} for crouton

@@ -97,7 +97,8 @@ EOF
     tar -cf "$tmp/data.tar" -T /dev/null
     ar r "$tmp/$pkgname.deb" \
         "$tmp/debian-binary" "$tmp/control.tar.gz" "$tmp/data.tar"
-    dpkg -i "$tmp/$pkgname.deb"
+    dpkg -i --force-depends "$tmp/$pkgname.deb"
+    apt-get -fy install
 }
 
 

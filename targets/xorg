@@ -124,16 +124,19 @@ if grep -q 1 '/sys/module/i915/parameters/i915_enable_fbc' 2>/dev/null; then
         fbcsupport=''
     fi
 fi
+inteldriver=''
+if [ "${ARCH#arm}" = "$ARCH" ]; then
+    inteldriver=xserver-xorg-video-intel$backport
+fi
 
-install xorg -- xserver-xorg-video-fbdev$backport \
-                xserver-xorg-video-intel$backport
+install xorg -- xserver-xorg-video-fbdev$backport $inteldriver
 if [ -f /sbin/frecon ]; then
     install xserver-xorg-video-modesetting$backport
 else
     install xserver-xorg-video-fbdev$backport
 fi
-if [ "${ARCH#arm}" = "$ARCH" ] && [ -z "$hasfbc" -o -n "$fbcsupport" ]; then
-    install xserver-xorg-video-intel$backport
+if [ -z "$hasfbc" -o -n "$fbcsupport" ]; then
+    install $inteldriver
 fi
 
 # This is a system with framebuffer compression, so we need SNA+tearfree

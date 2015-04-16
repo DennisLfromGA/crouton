@@ -142,7 +142,7 @@ fi
 
 # Install relevant video drivers
 fbdev=xserver-xorg-video-fbdev$backport
-if [ -f /sbin/frecon ]; then
+if [ ! -f "/sys/class/tty/tty0/active" ]; then
     install xserver-xorg-video-modesetting$backport
     if [ -z "$(list_uninstalled $fbdev)" ]; then
         remove $fbdev
@@ -152,6 +152,8 @@ else
 fi
 if [ -z "$hasfbc" -o -n "$fbcsupport" ]; then
     install $inteldriver
+elif [ -n "$inteldriver" ] && [ -z "$(list_uninstalled $inteldriver)" ]; then
+    remove $inteldriver
 fi
 
 # This is a system with framebuffer compression, so we need SNA+tearfree

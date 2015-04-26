@@ -390,9 +390,10 @@ for NAME in "$@"; do
         addtrap "echo 'Deleting partial archive.' 1>&2; \
                  kill '$splitpid' 2>/dev/null; rm -f '$dest' '$dest.part-'*"
         ret=0
-        spinner 1 tar --checkpoint=100 --checkpoint-action=exec=echo \
-            --one-file-system -V "crouton:backup.${date%-*}${date#*-}-$NAME" \
-            -caf "$tardest" -C "$CHROOTS" "$NAME" || ret="$?"
+        tar --one-file-system -V "crouton:backup.${date%-*}${date#*-}-$NAME" \
+             -C "$CHROOTS" -czf - "$NAME" |\
+             pv -berpt -s $(du -sb $CHROOTS |\
+             awk '{print $1}') > "$tardest" || ret=$?
         if [ -n "$SPLIT" ]; then
             wait "$splitpid" || ret="$?"
             mv -f "$dest.part-aaaa" "$dest" || ret="$?"
@@ -465,8 +466,8 @@ for NAME in "$@"; do
             tarparam='-a'
             catpid=''
         fi
-        spinner 1 tar --checkpoint=200 --checkpoint-action=exec=echo $tarparam \
-            --one-file-system -xf "$tarsrc" -C "$CHROOT" --strip-components=1
+        pv -berpt -s $(du -b $tarsrc | awk '{print $1}') $tarsrc |\
+            tar $tarparam --one-file-system -xz -C "$CHROOT" --strip-components=1
         if [ -n "$catpid" ]; then
             wait "$catpid"
         fi

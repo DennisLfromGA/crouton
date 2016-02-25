@@ -280,7 +280,7 @@ There's a way For Everyone to help!
     keep it relevant and organized.
   * Really like a certain desktop environment, but not up for coding? Open or
     comment on a bug with steps to get things working well.
-  * Hang out in the \#crouton IRC channel on freenode.net!
+  * [![Visit our IRC channel](https://kiwiirc.com/buttons/irc.kiwiirc.com/crouton.png)](https://kiwiirc.com/client/irc.kiwiirc.com/?&theme=basic#crouton)  Hang out in the \#crouton IRC channel on freenode.net! 
 
 
 License
